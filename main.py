@@ -36,6 +36,7 @@ BG = (50, 50, 50)
 BLACK = (0, 0, 0)
 PINK = (195,134,255)
 PINK2 = (255,102,255)
+WHITE = (255,255,255)
 
 
 #Getting soul images
@@ -61,6 +62,8 @@ for i in range(14):
 
 asgore_intro_body=sprite_sheet_asgore.get_image(16, 193, 159, 100, BLACK)
 
+asgore_flash=sprite_sheet_asgore.get_image(5, 716, 159, 113, PINK)
+
 textbubble = sprite_sheet_textbubble.get_image(99, 108, PINK2)
 
 #soundefects
@@ -82,6 +85,8 @@ def intro():
     trident_appear_cooldown=50
     cooldown=750
     moveleft=0
+    moveright=0
+    e=False
     frame=0
     font="fonts/8bitoperator_jve.ttf"
     text_line1 = RPGtext.Text(intro_text_narator_line1[a], font, 30, -10,False, 0.35)
@@ -106,7 +111,10 @@ def intro():
     centered=False
     while intro:
         #update background
-        screen.fill(BLACK)
+        if e:
+            screen.fill(WHITE)
+        else:
+            screen.fill(BLACK)
 
         #loading images
         #screen.blit(player_default, player_pos)
@@ -127,6 +135,8 @@ def intro():
             if current_tick-last_tick>=trident_appear_cooldown and frame<13:
                 frame+=1
                 last_tick=current_tick
+        elif e:
+            screen.blit(asgore_flash, asgore_intro_body_pos)
         else:
             screen.blit(current_asgore_face, asgore_face_pos)
             screen.blit(asgore_intro_body, asgore_intro_body_pos)
@@ -135,6 +145,15 @@ def intro():
             asgore_face_pos[0]-=24
             last_tick=current_tick
             moveleft+=1
+        if frame==13 and current_tick-last_tick>=cooldown and e==False:
+            pygame.mixer.Sound.play(move)
+            e=True
+            d=False
+            #20
+        if e and current_tick-last_tick>=move_cooldown and moveright<20:
+            asgore_intro_body_pos[0]+=15
+            last_tick=current_tick
+            moveright+=1
         
         if a==3:
             centered=True
