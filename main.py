@@ -59,34 +59,49 @@ for i in range(14):
 
     asgore_intro = sprite_sheet_asgore.get_image((5+290*(i%5)), (317+127*(i//5)), 285, 122, PINK)
     asgore_intro_anim.append(asgore_intro)
+asgore_intro=asgore_intro_anim[0].copy()
+var = pygame.PixelArray(asgore_intro)
+var.replace((255,255,255), (0,0,0))
+del var
+asgore_intro_anim.append(asgore_intro)
 
 asgore_intro_body=sprite_sheet_asgore.get_image(16, 193, 159, 100, BLACK)
 
 asgore_flash=sprite_sheet_asgore.get_image(5, 716, 159, 113, PINK)
 
+asgore_trident=sprite_sheet_asgore.get_image(295, 716, 240, 62, PINK)
+var = pygame.PixelArray(asgore_trident)
+var.replace((255,255,255), (255,26,3))
+var.replace((100,100,100), (91,13,18))
+del var
 textbubble = sprite_sheet_textbubble.get_image(99, 108, PINK2)
 
 #soundefects
 move = pygame.mixer.Sound("soundefects/snd_spearappear.wav")
 trident = pygame.mixer.Sound("soundefects/blade.wav")
+mercy_broken = pygame.mixer.Sound("soundefects/mercy_broken.wav")
 
 def intro():
     a=0
     b=False
     c=False
     d=False
+    e=False
+    f=False
     intro = True
     norepeat=False
     current_asgore_face=asgore_faces[0]
     asgore_face_pos=[260,3]
     asgore_intro_body_pos=[144,55]
+    trident_pos=[165,55]
     last_tick=0
-    move_cooldown=30
-    trident_appear_cooldown=50
+    move_cooldown=25
+    trident_appear_cooldown=60
     cooldown=750
     moveleft=0
     moveright=0
-    e=False
+    trident_offset=-4.5
+    trident_movement=0
     frame=0
     font="fonts/8bitoperator_jve.ttf"
     text_line1 = RPGtext.Text(intro_text_narator_line1[a], font, 30, -10,False, 0.35)
@@ -111,7 +126,7 @@ def intro():
     centered=False
     while intro:
         #update background
-        if e:
+        if e or f:
             screen.fill(WHITE)
         else:
             screen.fill(BLACK)
@@ -127,6 +142,10 @@ def intro():
         if c and moveleft==5 and current_tick-last_tick>=cooldown:
             d=True
             c=False
+        if e and moveright==20 and current_tick-last_tick>=cooldown:
+            e=False
+            f=True
+            norepeat=False
         if d:
             if norepeat==False:
                 pygame.mixer.Sound.play(trident)
@@ -135,8 +154,9 @@ def intro():
             if current_tick-last_tick>=trident_appear_cooldown and frame<13:
                 frame+=1
                 last_tick=current_tick
-        elif e:
-            screen.blit(asgore_flash, asgore_intro_body_pos)
+        elif e or f:
+            screen.blit(asgore_intro_anim[14], [asgore_intro_body_pos[0],15])
+            screen.blit(trident_img, trident_pos)
         else:
             screen.blit(current_asgore_face, asgore_face_pos)
             screen.blit(asgore_intro_body, asgore_intro_body_pos)
@@ -145,16 +165,27 @@ def intro():
             asgore_face_pos[0]-=24
             last_tick=current_tick
             moveleft+=1
-        if frame==13 and current_tick-last_tick>=cooldown and e==False:
+        if frame==13 and current_tick-last_tick>=cooldown and e==False and f==False:
             pygame.mixer.Sound.play(move)
             e=True
             d=False
             #20
         if e and current_tick-last_tick>=move_cooldown and moveright<20:
-            asgore_intro_body_pos[0]+=15
+            asgore_intro_body_pos[0]+=16
+            trident_pos[0]+=16
+            trident_pos[1]-=16
+            trident_img=pygame.transform.rotate(asgore_trident,trident_offset)
             last_tick=current_tick
+            trident_offset-=4.5
             moveright+=1
-        
+        if f and current_tick-last_tick>=move_cooldown and trident_movement<9:
+            if norepeat==False:
+                pygame.mixer.Sound.play(mercy_broken)
+                norepeat=True
+
+            trident_pos[1]+=120
+            last_tick=current_tick
+            trident_movement+=1
         if a==3:
             centered=True
             text_line1.render(screen,(320, 285),centered)
