@@ -24,6 +24,18 @@ class SpriteSheet_Buttons():
 		image.set_colorkey(colour)
 
 		return image
+
+	def get_image_selected(self, width, height, colour,num):
+		if num>1:
+			defect=158+(num-1)*101
+		else:
+			defect=56+num*102
+		image = pygame.Surface((width, height)).convert_alpha()
+		image.blit(self.sheet, (0, 0), (8, (defect), width, height))
+		image.set_colorkey(colour)
+
+		return image
+
 class SpriteSheet_Asgore():
 	def __init__(self, image):
 		self.sheet = image

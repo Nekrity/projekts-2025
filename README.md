@@ -25,6 +25,16 @@ Kods tiek analizēts pēc aizstavēšanas.
 
 ## Testēšana (0.5pt)
 - Testēšana - 2 veiksmes scenāriji
+1)knowing that asgore will deal 5 damage per hit by default, when player is hit by a fireball(1 hit) without asgore stats lowered, player will receive 5 damage
+2)knowing that player can attack asgore, when player attacks asgore, asgore takes damage
+
 - Testēšana - 4 lietošanas scenāriji
+1)knowing that asgore can kill player only when player's health is at 1 health and his attacks deal 5 damage per hit, when player is hit by a fireball(1 hit) and player's current health is 4, player health after attack will be 1 health
+2)knowing that butterscotch pie heals 99 heath and max health is 20, when player eats butterscotch pie when his health is 1 health, player's health will be 20 health
+3)knowing that talking to asgore 3 times will lower his attack and defence, when player talks to ASGORE 3 times, his attack and defence will go down.
+4)knowing that blue attacks won't hit player when he doesn't  moves and orange attacks when he moves, when player moved on blue attack during asgore trident attack, player will receive damage
+
 - Testēšana - 2 robež-scenāriji
+1)knowing that to hit enemy player must complete minigame(hit on timing), when player won't attack during minigame, asgore will receive no damage and "miss" will be displayed
+2)knowing that presing x button on the window closes game, when player preses x button on window, game closes
 - Testēšana - 4 automatizēti testi (pytest bilbiotēka)
